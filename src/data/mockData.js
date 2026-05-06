@@ -28,10 +28,10 @@ export const INTERACTIONS = [
 ];
 
 export const REMINDERS = [
-  { id: 1, client: 'John Stevens',  type: 'KYC Follow-up',             due: 'Today',    priority: 'High',   rep: 'S. Abraham' },
+  { id: 1, client: 'John Stevens',  type: 'KYC Follow-up',              due: 'Today',    priority: 'High',   rep: 'S. Abraham' },
   { id: 2, client: 'Priya Sharma',  type: 'Reactivation — Dormant 45d', due: 'Overdue',  priority: 'High',   rep: 'M. Smith'   },
-  { id: 3, client: 'Aisha Okonkwo', type: 'KYC Document Chase',         due: 'Tomorrow', priority: 'Medium', rep: 'J. Doe'     },
-  { id: 4, client: 'Sofia Rossi',   type: 'Quote Follow-up',            due: 'Apr 26',   priority: 'Medium', rep: 'S. Abraham' },
+  { id: 3, client: 'Aisha Okonkwo', type: 'KYC Document Chase',          due: 'Tomorrow', priority: 'Medium', rep: 'J. Doe'     },
+  { id: 4, client: 'Sofia Rossi',   type: 'Quote Follow-up',             due: 'Apr 26',   priority: 'Medium', rep: 'S. Abraham' },
 ];
 
 export const ALERTS = [
@@ -41,11 +41,21 @@ export const ALERTS = [
   { id: 4, text: 'New lead from Google Ads — Ahmed Khalil assigned',    type: 'lead',    time: '12h ago' },
 ];
 
+// ── Revenue trend — v = 2026 actuals, prev = same month 2025 ──
+// prev is consumed by the ComposedChart YoY comparison line in RevenueAnalytics.jsx
 export const revData = [
-  { n: 'Jan', v: 3200 }, { n: 'Feb', v: 4100 }, { n: 'Mar', v: 3800 },
-  { n: 'Apr', v: 5200 }, { n: 'May', v: 4700 }, { n: 'Jun', v: 6100 },
-  { n: 'Jul', v: 5500 }, { n: 'Aug', v: 7200 }, { n: 'Sep', v: 6800 },
-  { n: 'Oct', v: 8100 }, { n: 'Nov', v: 7600 }, { n: 'Dec', v: 9200 },
+  { n: 'Jan', v: 3200, prev: 2580 },
+  { n: 'Feb', v: 4100, prev: 3200 },
+  { n: 'Mar', v: 3800, prev: 2950 },
+  { n: 'Apr', v: 5200, prev: 4100 },
+  { n: 'May', v: 4700, prev: 3700 },
+  { n: 'Jun', v: 6100, prev: 4800 },
+  { n: 'Jul', v: 5500, prev: 4300 },
+  { n: 'Aug', v: 7200, prev: 5600 },
+  { n: 'Sep', v: 6800, prev: 5400 },
+  { n: 'Oct', v: 8100, prev: 6500 },
+  { n: 'Nov', v: 7600, prev: 6000 },
+  { n: 'Dec', v: 9200, prev: 7400 },
 ];
 
 export const pipelineData = [

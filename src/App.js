@@ -180,7 +180,7 @@ export default function App() {
         </header>
 
         <div className="flex-1 overflow-y-auto px-8 py-6">
-          <ActivePage />
+          <ActivePage onNavigate={setActive} />
         </div>
       </main>
     </div>

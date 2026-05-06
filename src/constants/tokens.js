@@ -4,4 +4,5 @@ export const C = {
   slate500: '#64748B', slate400: '#94A3B8', slate200: '#E2E8F0',
   slate100: '#F1F5F9', slate50: '#F8FAFC', white: '#FFFFFF',
   emerald: '#10B981', rose: '#F43F5E', amber: '#F59E0B', sky: '#0EA5E9',
+  indigoLt: '#818CF8',  // add this alias
 };
