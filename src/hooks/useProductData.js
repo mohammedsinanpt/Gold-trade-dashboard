@@ -4,17 +4,21 @@
 import { useState, useEffect, useCallback } from 'react';
 import * as svc from '../services/productService';
 import {
-  mockMetrics, mockHourly, mockProductTypes, mockOrigins, mockCoins,
-  mockMonthlyTrend, mockAvgDeal, mockProducts, mockPerformance, mockBuySell,
+  mockMetrics, mockHourly, mockProductTypes, mockRevenueByType,
+  mockOrigins, mockCoins, mockMonthlyTrend, mockProducts,
+  mockPerformance, mockBuySell, mockPerDealPremium, mockPremiumSplit,
+  mockScatterDeals, mockPipelineData, mockPipelineStats,
 } from '../data/productMockData';
 
-const USE_MOCK   = true;          // ← flip to false when API is ready
+const USE_MOCK   = true;       // ← flip to false when real API is ready
 const MOCK_DELAY = 500;
 const wait       = (ms) => new Promise((r) => setTimeout(r, ms));
 
 const EMPTY = {
-  metrics: null, hourly: [], productTypes: [], origins: [], coins: [],
-  monthlyTrend: [], avgDeal: [], products: [], performance: [], buySell: null,
+  metrics: null, hourly: [], productTypes: [], revenueByType: [],
+  origins: [], coins: [], monthlyTrend: [], products: [],
+  performance: [], buySell: null, perDealPremium: [], premiumSplit: null,
+  scatterDeals: [], pipelineData: [], pipelineStats: null,
 };
 
 export const useProductData = () => {
@@ -28,23 +32,50 @@ export const useProductData = () => {
       if (USE_MOCK) {
         await wait(MOCK_DELAY);
         setData({
-          metrics: mockMetrics, hourly: mockHourly, productTypes: mockProductTypes,
-          origins: mockOrigins, coins: mockCoins, monthlyTrend: mockMonthlyTrend,
-          avgDeal: mockAvgDeal, products: mockProducts, performance: mockPerformance,
-          buySell: mockBuySell,
+          metrics:       mockMetrics,
+          hourly:        mockHourly,
+          productTypes:  mockProductTypes,
+          revenueByType: mockRevenueByType,
+          origins:       mockOrigins,
+          coins:         mockCoins,
+          monthlyTrend:  mockMonthlyTrend,
+          products:      mockProducts,
+          performance:   mockPerformance,
+          buySell:       mockBuySell,
+          perDealPremium:mockPerDealPremium,
+          premiumSplit:  mockPremiumSplit,
+          scatterDeals:  mockScatterDeals,
+          pipelineData:  mockPipelineData,
+          pipelineStats: mockPipelineStats,
         });
       } else {
-        const [metrics, hourly, monthlyTrend, products, performance, avgDeal, origins, coins, buySell] =
-          await Promise.all([
-            svc.fetchMetrics(), svc.fetchHourlyVolume(), svc.fetchMonthlyTrend(),
-            svc.fetchProducts(), svc.fetchPerformance(), svc.fetchAvgDealValues(),
-            svc.fetchOrigins(), svc.fetchCoinBreakdown(), svc.fetchBuySellSplit(),
-          ]);
+        const [
+          metrics, hourly, monthlyTrend, products, performance,
+          origins, coins, buySell, revenueByType,
+          perDealPremium, premiumSplit, scatterDeals,
+          pipelineData, pipelineStats,
+        ] = await Promise.all([
+          svc.fetchMetrics(),
+          svc.fetchHourlyVolume(),
+          svc.fetchMonthlyTrend(),
+          svc.fetchProducts(),
+          svc.fetchPerformance(),
+          svc.fetchOrigins(),
+          svc.fetchCoinBreakdown(),
+          svc.fetchBuySellSplit(),
+          svc.fetchRevenueByType(),
+          svc.fetchPerDealPremium(),
+          svc.fetchPremiumSplit(),
+          svc.fetchScatterDeals(),
+          svc.fetchPipelineData(),
+          svc.fetchPipelineStats(),
+        ]);
         setData({
-          metrics, hourly, monthlyTrend, origins, coins, avgDeal, buySell,
+          metrics, hourly, monthlyTrend, origins, coins, buySell,
+          revenueByType, perDealPremium, premiumSplit, scatterDeals,
+          pipelineData, pipelineStats, performance,
           productTypes: products.typeBreakdown ?? [],
           products:     products.items        ?? products,
-          performance,
         });
       }
     } catch (err) {

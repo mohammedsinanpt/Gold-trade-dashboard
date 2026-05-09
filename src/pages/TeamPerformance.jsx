@@ -1,13 +1,22 @@
 import React, { useState } from 'react';
 import {
   Phone, CheckCircle2, Clock, Briefcase, Target,
-  AlertTriangle, Send, TrendingUp, DollarSign, Star,
-  Users, Award, BarChart2, RefreshCw, Zap, ChevronUp, ChevronDown,
+  TrendingUp, DollarSign, Star,
+  Users, Award, BarChart2, RefreshCw,
+  ChevronUp, ChevronDown,
 } from 'lucide-react';
 import {
-  AreaChart, Area, BarChart, Bar, RadialBarChart, RadialBar,
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
-  ResponsiveContainer, Cell, PieChart, Pie, Legend,
+  AreaChart,
+  Area,
+  BarChart,
+  Bar,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Cell,
 } from 'recharts';
 
 // ─── Palette & Tokens ────────────────────────────────────────────────────────
@@ -93,11 +102,11 @@ const dealData = REPS.map((r, i) => ({
   color: REP_COLORS[i],
 }));
 
-const cycleData = REPS.map((r, i) => ({
+/*const cycleData = REPS.map((r, i) => ({
   name: r.short,
   days: r.cycleTime,
   fill: REP_COLORS[i],
-}));
+}));*/
 
 const qualityData = REPS.map((r, i) => ({
   name: r.short,
@@ -116,12 +125,13 @@ const fmt = (n) =>
 
 const Pill = ({ children, color = 'indigo' }) => {
   const map = {
-    indigo: 'bg-indigo-50 text-indigo-600',
-    emerald: 'bg-emerald-50 text-emerald-600',
-    amber: 'bg-amber-50 text-amber-600',
-    rose: 'bg-rose-50 text-rose-500',
-    sky: 'bg-sky-50 text-sky-600',
-  };
+  indigo: 'bg-indigo-50 text-indigo-600',
+  emerald: 'bg-emerald-50 text-emerald-600',
+  amber: 'bg-amber-50 text-amber-600',
+  rose: 'bg-rose-50 text-rose-500',
+  sky: 'bg-sky-50 text-sky-600',
+  violet: 'bg-violet-50 text-violet-600',
+};
   return (
     <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-black tracking-wide ${map[color]}`}>
       {children}
@@ -206,443 +216,46 @@ const RepAvatar = ({ short, color, rank }) => (
   </div>
 );
 
+const SummaryCards = () => (
+ 
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 justify-between mb-2">
+    <MetricCard
+      label="Total Revenue"
+      value="$5.1M"
+      trend="+14%"
+      icon={DollarSign}
+      accent={COLORS.emerald}
+    />
+    <MetricCard
+      label="Deals Closed"
+      value="48"
+      trend="+8%"
+      icon={Target}
+      accent={COLORS.indigo}
+    />
+
+    <MetricCard
+      label="Conversion Rate"
+      value="24%"
+      trend="+5%"
+      icon={TrendingUp}
+      accent={COLORS.sky}
+    />
+
+    <MetricCard
+      label="CSAT Score"
+      value="4.4"
+      trend="+2%"
+      icon={Star}
+      accent={COLORS.amber}
+    />
+  </div>
+ 
+);
+
 // ─── Section 1: Daily Activity ────────────────────────────────────────────────
-const DailyActivity = () => (
-  <div className="space-y-5">
-    <SectionTitle icon={Zap} title="Daily Activity" subtitle="Team-wide outbound · inbound · visits · follow-ups" accent={COLORS.indigo} />
 
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-      <MetricCard label="Outbound Calls Today" value="184" trend="+12%" icon={Phone} sub="team total" accent={COLORS.indigo} />
-      <MetricCard label="Inbound Calls Today" value="100" trend="+8%" icon={Phone} sub="handled today" accent={COLORS.sky} />
-      <MetricCard label="Customer Visits (Week)" value="28" trend="+5%" icon={Briefcase} sub="in-person" accent={COLORS.emerald} />
-      <MetricCard label="Overdue Follow-ups" value="12" trend="+3%" trendUp={false} icon={AlertTriangle} sub="action needed" accent={COLORS.rose} />
-    </div>
 
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-      {/* Weekly Calls Chart */}
-      <Card className="lg:col-span-2 p-5">
-        <p className="text-xs font-black text-slate-700 mb-1">Weekly Call Volume</p>
-        <p className="text-[10px] text-slate-400 font-semibold mb-4">Outbound vs Inbound · This Week</p>
-        <ResponsiveContainer width="100%" height={180}>
-          <AreaChart data={weeklyCallData} margin={{ top: 5, right: 5, left: -20, bottom: 0 }}>
-            <defs>
-              <linearGradient id="gradOut" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor={COLORS.indigo} stopOpacity={0.25} />
-                <stop offset="95%" stopColor={COLORS.indigo} stopOpacity={0} />
-              </linearGradient>
-              <linearGradient id="gradInb" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor={COLORS.sky} stopOpacity={0.2} />
-                <stop offset="95%" stopColor={COLORS.sky} stopOpacity={0} />
-              </linearGradient>
-            </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-            <XAxis dataKey="day" tick={{ fontSize: 9, fontWeight: 700, fill: COLORS.slate400 }} axisLine={false} tickLine={false} />
-            <YAxis tick={{ fontSize: 9, fontWeight: 700, fill: COLORS.slate400 }} axisLine={false} tickLine={false} />
-            <Tooltip content={<CustomTooltip />} />
-            <Area type="monotone" dataKey="out" name="Outbound" stroke={COLORS.indigo} strokeWidth={2.5} fill="url(#gradOut)" dot={{ r: 3, fill: COLORS.indigo, strokeWidth: 0 }} />
-            <Area type="monotone" dataKey="inb" name="Inbound" stroke={COLORS.sky} strokeWidth={2.5} fill="url(#gradInb)" dot={{ r: 3, fill: COLORS.sky, strokeWidth: 0 }} />
-          </AreaChart>
-        </ResponsiveContainer>
-        <div className="flex gap-4 mt-3">
-          {[{ label: 'Outbound', color: COLORS.indigo }, { label: 'Inbound', color: COLORS.sky }].map(l => (
-            <div key={l.label} className="flex items-center gap-1.5">
-              <div className="w-3 h-1.5 rounded-full" style={{ background: l.color }} />
-              <span className="text-[9px] font-bold text-slate-400">{l.label}</span>
-            </div>
-          ))}
-        </div>
-      </Card>
-
-      {/* Activity Breakdown */}
-      <Card className="p-5">
-        <p className="text-xs font-black text-slate-700 mb-1">Activity Breakdown</p>
-        <p className="text-[10px] text-slate-400 font-semibold mb-4">Today's Team Totals</p>
-        <div className="space-y-3">
-          {[
-            { label: 'Outbound Calls', val: 184, max: 200, icon: Phone, color: COLORS.indigo },
-            { label: 'Inbound Calls', val: 100, max: 150, icon: Phone, color: COLORS.sky },
-            { label: 'Visits / Week', val: 28, max: 40, icon: Briefcase, color: COLORS.emerald },
-            { label: 'Follow-ups Done', val: 68, max: 80, icon: CheckCircle2, color: COLORS.emerald },
-            { label: 'Follow-ups Overdue', val: 12, max: 20, icon: AlertTriangle, color: COLORS.rose },
-            { label: 'Quotes Sent', val: 21, max: 30, icon: Send, color: COLORS.amber },
-            { label: 'New Leads Added', val: 42, max: 60, icon: Target, color: COLORS.violet },
-          ].map(m => (
-            <div key={m.label}>
-              <div className="flex items-center justify-between mb-1">
-                <div className="flex items-center gap-1.5">
-                  <m.icon size={10} style={{ color: m.color }} />
-                  <span className="text-[9px] font-bold text-slate-500">{m.label}</span>
-                </div>
-                <span className="text-[10px] font-black" style={{ color: m.color }}>{m.val}</span>
-              </div>
-              <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                <div
-                  className="h-full rounded-full transition-all"
-                  style={{ width: `${(m.val / m.max) * 100}%`, background: m.color }}
-                />
-              </div>
-            </div>
-          ))}
-        </div>
-      </Card>
-    </div>
-  </div>
-);
-
-// ─── Section 2: Pipeline Activity ─────────────────────────────────────────────
-const PipelineActivity = () => (
-  <div className="space-y-5">
-    <SectionTitle icon={BarChart2} title="Pipeline Activity" subtitle="Leads · Quotes · Follow-ups per rep" accent={COLORS.sky} />
-
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-      {/* Stacked bar */}
-      <Card className="p-5">
-        <p className="text-xs font-black text-slate-700 mb-1">Pipeline by Rep</p>
-        <p className="text-[10px] text-slate-400 font-semibold mb-4">Leads · Quotes · Follow-ups Done</p>
-        <ResponsiveContainer width="100%" height={200}>
-          <BarChart data={pipelineData} margin={{ top: 0, right: 0, left: -25, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
-            <XAxis dataKey="name" tick={{ fontSize: 9, fontWeight: 700, fill: COLORS.slate400 }} axisLine={false} tickLine={false} />
-            <YAxis tick={{ fontSize: 9, fontWeight: 700, fill: COLORS.slate400 }} axisLine={false} tickLine={false} />
-            <Tooltip content={<CustomTooltip />} />
-            <Bar dataKey="leads" name="New Leads" fill={COLORS.indigo} radius={[0, 0, 0, 0]} stackId="a" />
-            <Bar dataKey="quotes" name="Quotes Sent" fill={COLORS.amber} radius={[0, 0, 0, 0]} stackId="a" />
-            <Bar dataKey="followups" name="Follow-ups Done" fill={COLORS.emerald} radius={[4, 4, 0, 0]} stackId="a" />
-          </BarChart>
-        </ResponsiveContainer>
-        <div className="flex flex-wrap gap-3 mt-3">
-          {[
-            { label: 'New Leads', color: COLORS.indigo },
-            { label: 'Quotes Sent', color: COLORS.amber },
-            { label: 'Follow-ups Done', color: COLORS.emerald },
-          ].map(l => (
-            <div key={l.label} className="flex items-center gap-1.5">
-              <div className="w-2.5 h-2.5 rounded-sm" style={{ background: l.color }} />
-              <span className="text-[9px] font-bold text-slate-400">{l.label}</span>
-            </div>
-          ))}
-        </div>
-      </Card>
-
-      {/* Pipeline table */}
-      <Card className="p-5">
-        <p className="text-xs font-black text-slate-700 mb-1">Rep-Level Pipeline Detail</p>
-        <p className="text-[10px] text-slate-400 font-semibold mb-4">Outbound · Inbound · Visits · Leads · Quotes · Follow-ups</p>
-        <table className="w-full">
-          <thead>
-            <tr className="border-b border-slate-100">
-              {['Rep', 'Out', 'In', 'Visits', 'Leads', 'Quotes', 'Done', 'Overdue'].map(h => (
-                <th key={h} className="pb-2 text-left text-[8px] font-black text-slate-400 uppercase tracking-widest">{h}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-slate-50">
-            {REPS.map((r, i) => (
-              <tr key={i} className="hover:bg-slate-50 transition-all">
-                <td className="py-3">
-                  <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-lg flex items-center justify-center text-[8px] font-black text-white" style={{ background: REP_COLORS[i] }}>{r.short}</div>
-                    <span className="text-[10px] font-bold text-slate-700">{r.name}</span>
-                  </div>
-                </td>
-                <td className="py-3 text-[10px] font-bold text-slate-600">{r.out}</td>
-                <td className="py-3 text-[10px] font-bold text-slate-600">{r.inb}</td>
-                <td className="py-3 text-[10px] font-bold text-slate-600">{r.visits}</td>
-                <td className="py-3"><Pill color="indigo">{r.leads}</Pill></td>
-                <td className="py-3"><Pill color="amber">{r.quotes}</Pill></td>
-                <td className="py-3"><Pill color="emerald">{r.done}</Pill></td>
-                <td className="py-3">
-                  <Pill color={r.overdue > 0 ? 'rose' : 'emerald'}>{r.overdue}</Pill>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </Card>
-    </div>
-  </div>
-);
-
-// ─── Section 3: Deals & Revenue ────────────────────────────────────────────────
-const DealsRevenue = () => (
-  <div className="space-y-5">
-    <SectionTitle icon={DollarSign} title="Deals & Revenue" subtitle="Closed deals · Revenue generated · Average deal size per rep" accent={COLORS.emerald} />
-
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-      {REPS.map((r, i) => (
-        <Card key={i} className="p-5 hover:shadow-md transition-shadow">
-          <div className="flex items-center gap-2 mb-3">
-            <div className="w-8 h-8 rounded-xl flex items-center justify-center text-[10px] font-black text-white" style={{ background: REP_COLORS[i] }}>{r.short}</div>
-            <span className="text-[10px] font-bold text-slate-600">{r.name}</span>
-          </div>
-          <p className="text-xl font-black text-slate-800">{fmt(r.revenue)}</p>
-          <p className="text-[9px] text-slate-400 font-bold mb-3">Revenue Generated</p>
-          <div className="grid grid-cols-2 gap-2">
-            <div className="bg-slate-50 rounded-xl p-2 text-center">
-              <p className="text-xs font-black" style={{ color: REP_COLORS[i] }}>{r.deals}</p>
-              <p className="text-[8px] text-slate-400 font-bold">Deals Closed</p>
-            </div>
-            <div className="bg-slate-50 rounded-xl p-2 text-center">
-              <p className="text-xs font-black text-slate-700">{fmt(r.avgDeal)}</p>
-              <p className="text-[8px] text-slate-400 font-bold">Avg Deal</p>
-            </div>
-          </div>
-        </Card>
-      ))}
-    </div>
-
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-      {/* Deals closed bar */}
-      <Card className="p-5">
-        <p className="text-xs font-black text-slate-700 mb-1">Deals Closed vs Avg Deal Size</p>
-        <p className="text-[10px] text-slate-400 font-semibold mb-4">This month · per rep</p>
-        <ResponsiveContainer width="100%" height={190}>
-          <BarChart data={dealData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
-            <XAxis dataKey="name" tick={{ fontSize: 9, fontWeight: 700, fill: COLORS.slate400 }} axisLine={false} tickLine={false} />
-            <YAxis yAxisId="left" tick={{ fontSize: 9, fontWeight: 700, fill: COLORS.slate400 }} axisLine={false} tickLine={false} />
-            <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 9, fontWeight: 700, fill: COLORS.slate400 }} axisLine={false} tickLine={false} unit="k" />
-            <Tooltip content={<CustomTooltip />} />
-            <Bar yAxisId="left" dataKey="deals" name="Deals Closed" radius={[4, 4, 0, 0]}>
-              {dealData.map((d, i) => <Cell key={i} fill={d.color} />)}
-            </Bar>
-            <Line yAxisId="right" type="monotone" dataKey="avgDeal" name="Avg Deal ($k)" stroke={COLORS.amber} strokeWidth={2.5} dot={{ r: 4, fill: COLORS.amber, strokeWidth: 0 }} />
-          </BarChart>
-        </ResponsiveContainer>
-        <div className="flex gap-4 mt-3">
-          <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-sm bg-indigo-500" /><span className="text-[9px] font-bold text-slate-400">Deals Closed</span></div>
-          <div className="flex items-center gap-1.5"><div className="w-3 h-0.5 bg-amber-500" /><span className="text-[9px] font-bold text-slate-400">Avg Deal Size</span></div>
-        </div>
-      </Card>
-
-      {/* Revenue comparison */}
-      <Card className="p-5">
-        <p className="text-xs font-black text-slate-700 mb-1">Revenue per Rep</p>
-        <p className="text-[10px] text-slate-400 font-semibold mb-4">Grouped by generated revenue · $M</p>
-        <ResponsiveContainer width="100%" height={190}>
-          <BarChart data={dealData} layout="vertical" margin={{ top: 0, right: 15, left: 10, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" horizontal={false} />
-            <XAxis type="number" tick={{ fontSize: 9, fontWeight: 700, fill: COLORS.slate400 }} axisLine={false} tickLine={false} unit="M" />
-            <YAxis type="category" dataKey="name" tick={{ fontSize: 9, fontWeight: 700, fill: COLORS.slate400 }} axisLine={false} tickLine={false} width={28} />
-            <Tooltip content={<CustomTooltip prefix="$" suffix="M" />} />
-            <Bar dataKey="revenue" name="Revenue ($M)" radius={[0, 4, 4, 0]}>
-              {dealData.map((d, i) => <Cell key={i} fill={d.color} />)}
-            </Bar>
-          </BarChart>
-        </ResponsiveContainer>
-      </Card>
-    </div>
-  </div>
-);
-
-// ─── Section 4: Targets ────────────────────────────────────────────────────────
-const Targets = () => (
-  <div className="space-y-5">
-    <SectionTitle icon={Target} title="Targets & Quota" subtitle="Revenue vs quota · Achievement % · Avg deal cycle time" accent={COLORS.violet} />
-
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-      {/* Revenue vs Quota grouped bar */}
-      <Card className="lg:col-span-2 p-5">
-        <p className="text-xs font-black text-slate-700 mb-1">Revenue vs Monthly Quota</p>
-        <p className="text-[10px] text-slate-400 font-semibold mb-4">Actual revenue (filled) vs target ($k)</p>
-        <ResponsiveContainer width="100%" height={200}>
-          <BarChart data={revenueVsQuota} margin={{ top: 0, right: 0, left: -15, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
-            <XAxis dataKey="name" tick={{ fontSize: 9, fontWeight: 700, fill: COLORS.slate400 }} axisLine={false} tickLine={false} />
-            <YAxis tick={{ fontSize: 9, fontWeight: 700, fill: COLORS.slate400 }} axisLine={false} tickLine={false} unit="k" />
-            <Tooltip content={<CustomTooltip suffix="k" />} />
-            <Bar dataKey="quota" name="Quota ($k)" fill="#e2e8f0" radius={[4, 4, 0, 0]} />
-            <Bar dataKey="revenue" name="Revenue ($k)" radius={[4, 4, 0, 0]}>
-              {revenueVsQuota.map((d, i) => (
-                <Cell key={i} fill={d.color} fillOpacity={d.pct >= 90 ? 1 : d.pct >= 70 ? 0.85 : 0.65} />
-              ))}
-            </Bar>
-          </BarChart>
-        </ResponsiveContainer>
-        <div className="flex gap-4 mt-3">
-          <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-sm bg-slate-200" /><span className="text-[9px] font-bold text-slate-400">Quota</span></div>
-          <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-sm bg-indigo-500" /><span className="text-[9px] font-bold text-slate-400">Actual Revenue</span></div>
-        </div>
-      </Card>
-
-      {/* Quota achievement radials */}
-      <Card className="p-5">
-        <p className="text-xs font-black text-slate-700 mb-1">Quota Achievement</p>
-        <p className="text-[10px] text-slate-400 font-semibold mb-4">% of monthly target hit</p>
-        <div className="grid grid-cols-2 gap-3">
-          {REPS.map((r, i) => {
-            const pct = Math.round((r.revenue / r.quota) * 100);
-            return (
-              <div key={i} className="flex flex-col items-center">
-                <div className="relative w-16 h-16">
-                  <svg viewBox="0 0 36 36" className="w-16 h-16 -rotate-90">
-                    <circle cx="18" cy="18" r="14" fill="none" stroke="#f1f5f9" strokeWidth="3" />
-                    <circle
-                      cx="18" cy="18" r="14" fill="none"
-                      stroke={REP_COLORS[i]}
-                      strokeWidth="3"
-                      strokeDasharray={`${(pct / 100) * 87.96} 87.96`}
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                  <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <span className="text-[11px] font-black text-slate-800">{pct}%</span>
-                  </div>
-                </div>
-                <span className="text-[8px] font-bold text-slate-500 mt-1">{r.short}</span>
-              </div>
-            );
-          })}
-        </div>
-      </Card>
-    </div>
-
-    {/* Avg Deal Cycle Time */}
-    <Card className="p-5">
-      <p className="text-xs font-black text-slate-700 mb-1">Average Deal Cycle Time</p>
-      <p className="text-[10px] text-slate-400 font-semibold mb-5">Days from first contact to close · lower is better</p>
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {REPS.map((r, i) => (
-          <div key={i} className="relative">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="w-6 h-6 rounded-lg flex items-center justify-center text-[9px] font-black text-white" style={{ background: REP_COLORS[i] }}>{r.short}</div>
-              <span className="text-[10px] font-bold text-slate-600">{r.name}</span>
-            </div>
-            <div className="flex items-end gap-2">
-              <span className="text-2xl font-black text-slate-800">{r.cycleTime}</span>
-              <span className="text-[10px] text-slate-400 font-bold pb-1">days</span>
-            </div>
-            <div className="mt-2 h-2 bg-slate-100 rounded-full overflow-hidden">
-              <div
-                className="h-full rounded-full"
-                style={{ width: `${(r.cycleTime / 45) * 100}%`, background: REP_COLORS[i] }}
-              />
-            </div>
-            <div className="mt-1.5">
-              <Pill color={r.cycleTime <= 20 ? 'emerald' : r.cycleTime <= 30 ? 'amber' : 'rose'}>
-                {r.cycleTime <= 20 ? 'Fast' : r.cycleTime <= 30 ? 'Average' : 'Slow'}
-              </Pill>
-            </div>
-          </div>
-        ))}
-      </div>
-    </Card>
-  </div>
-);
-
-// ─── Section 5: Quality Metrics ────────────────────────────────────────────────
-const QualityMetrics = () => (
-  <div className="space-y-5">
-    <SectionTitle icon={Star} title="Quality Metrics" subtitle="Conversion · CSAT · Repeat customers · Upsell rate" accent={COLORS.amber} />
-
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-      {[
-        { label: 'Best Conversion Rate', value: '24%', icon: TrendingUp, accent: COLORS.indigo, sub: 'S. Abraham' },
-        { label: 'Avg CSAT Score', value: '4.4', icon: Star, accent: COLORS.amber, sub: 'out of 5.0' },
-        { label: 'Total Repeat Customers', value: '33', icon: RefreshCw, accent: COLORS.emerald, sub: 'this month' },
-        { label: 'Best Upsell Rate', value: '18%', icon: TrendingUp, accent: COLORS.violet, sub: 'S. Abraham' },
-      ].map((m, i) => (
-        <MetricCard key={i} label={m.label} value={m.value} trend="+4%" icon={m.icon} sub={m.sub} accent={m.accent} />
-      ))}
-    </div>
-
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-      {/* Conversion + Upsell grouped bar */}
-      <Card className="p-5">
-        <p className="text-xs font-black text-slate-700 mb-1">Conversion & Upsell Rate</p>
-        <p className="text-[10px] text-slate-400 font-semibold mb-4">Lead-to-close % · Upsell % per rep</p>
-        <ResponsiveContainer width="100%" height={190}>
-          <BarChart data={qualityData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
-            <XAxis dataKey="name" tick={{ fontSize: 9, fontWeight: 700, fill: COLORS.slate400 }} axisLine={false} tickLine={false} />
-            <YAxis tick={{ fontSize: 9, fontWeight: 700, fill: COLORS.slate400 }} axisLine={false} tickLine={false} unit="%" />
-            <Tooltip content={<CustomTooltip suffix="%" />} />
-            <Bar dataKey="conv" name="Conversion %" radius={[4, 4, 0, 0]}>
-              {qualityData.map((d, i) => <Cell key={i} fill={d.color} />)}
-            </Bar>
-            <Bar dataKey="upsell" name="Upsell %" fill="#f59e0b" radius={[4, 4, 0, 0]} fillOpacity={0.5} />
-          </BarChart>
-        </ResponsiveContainer>
-        <div className="flex gap-4 mt-3">
-          <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-sm bg-indigo-500" /><span className="text-[9px] font-bold text-slate-400">Conversion %</span></div>
-          <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-sm bg-amber-400" /><span className="text-[9px] font-bold text-slate-400">Upsell %</span></div>
-        </div>
-      </Card>
-
-      {/* CSAT + Repeat customers */}
-      <Card className="p-5">
-        <p className="text-xs font-black text-slate-700 mb-1">CSAT & Repeat Customers</p>
-        <p className="text-[10px] text-slate-400 font-semibold mb-4">Satisfaction score (×20) · Repeat handled</p>
-        <ResponsiveContainer width="100%" height={190}>
-          <BarChart data={qualityData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
-            <XAxis dataKey="name" tick={{ fontSize: 9, fontWeight: 700, fill: COLORS.slate400 }} axisLine={false} tickLine={false} />
-            <YAxis tick={{ fontSize: 9, fontWeight: 700, fill: COLORS.slate400 }} axisLine={false} tickLine={false} />
-            <Tooltip content={<CustomTooltip />} />
-            <Bar dataKey="csat" name="CSAT (×20)" fill={COLORS.amber} radius={[4, 4, 0, 0]} fillOpacity={0.85} />
-            <Bar dataKey="repeat" name="Repeat Customers" fill={COLORS.emerald} radius={[4, 4, 0, 0]} />
-          </BarChart>
-        </ResponsiveContainer>
-        <div className="flex gap-4 mt-3">
-          <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-sm bg-amber-400" /><span className="text-[9px] font-bold text-slate-400">CSAT (×20 scale)</span></div>
-          <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-sm bg-emerald-500" /><span className="text-[9px] font-bold text-slate-400">Repeat Customers</span></div>
-        </div>
-      </Card>
-    </div>
-
-    {/* Rep quality table */}
-    <Card className="p-5">
-      <p className="text-xs font-black text-slate-700 mb-1">Quality Metrics per Rep</p>
-      <p className="text-[10px] text-slate-400 font-semibold mb-4">Full breakdown</p>
-      <table className="w-full">
-        <thead>
-          <tr className="border-b border-slate-100">
-            {['Rep', 'Conversion Rate', 'CSAT Score', 'Repeat Customers', 'Upsell Rate'].map(h => (
-              <th key={h} className="pb-3 text-left text-[8px] font-black text-slate-400 uppercase tracking-widest px-2">{h}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-slate-50">
-          {REPS.map((r, i) => (
-            <tr key={i} className="hover:bg-slate-50 transition-all">
-              <td className="px-2 py-3">
-                <div className="flex items-center gap-2">
-                  <RepAvatar short={r.short} color={REP_COLORS[i]} rank={i} />
-                  <span className="text-xs font-bold text-slate-800">{r.name}</span>
-                </div>
-              </td>
-              <td className="px-2 py-3">
-                <div className="flex items-center gap-2">
-                  <div className="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden" style={{ maxWidth: 80 }}>
-                    <div className="h-full rounded-full" style={{ width: `${(r.conv / 30) * 100}%`, background: REP_COLORS[i] }} />
-                  </div>
-                  <span className="text-[10px] font-black text-slate-700">{r.conv}%</span>
-                </div>
-              </td>
-              <td className="px-2 py-3">
-                <div className="flex items-center gap-1.5">
-                  {[1, 2, 3, 4, 5].map(s => (
-                    <div key={s} className={`w-2 h-2 rounded-full ${s <= Math.round(r.csat) ? '' : 'opacity-20'}`} style={{ background: COLORS.amber }} />
-                  ))}
-                  <span className="text-[10px] font-black text-amber-600 ml-1">{r.csat}</span>
-                </div>
-              </td>
-              <td className="px-2 py-3">
-                <div className="flex items-center gap-2">
-                  <Users size={11} className="text-emerald-500" />
-                  <span className="text-[10px] font-black text-emerald-600">{r.repeat}</span>
-                </div>
-              </td>
-              <td className="px-2 py-3"><Pill color="violet">{r.upsell}%</Pill></td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </Card>
-  </div>
-);
-
-// ─── Section 6: Overall Leaderboard ──────────────────────────────────────────
 const OverallLeaderboard = () => {
   const [sort, setSort] = useState('Revenue');
 
@@ -660,7 +273,8 @@ const OverallLeaderboard = () => {
   return (
     <div className="space-y-5">
       <div className="flex items-start justify-between">
-        <SectionTitle icon={Award} title="Overall Leaderboard" subtitle="Activity score · Ranked by revenue, deals or conversion" accent={COLORS.rose} />
+        <SectionTitle icon={Award} title="Overall Leaderboard"
+         subtitle="Activity score · Ranked by revenue, deals or conversion" accent={COLORS.rose} />
         <div className="flex gap-1.5 mt-0.5">
           {leaderboardOptions.map(opt => (
             <button
@@ -820,20 +434,627 @@ const OverallLeaderboard = () => {
   );
 };
 
+
+// ─── Section 2: Daily Activity ─────────────────────────────────────────────
+const DailyActivity = () => (
+  <div className="space-y-5">
+
+    <SectionTitle
+      icon={Phone}
+      title="Daily Activity"
+      subtitle="Calls · Visits · Follow-ups"
+      accent={COLORS.indigo}
+    />
+
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+
+      {/* Weekly Calls Chart */}
+      <Card className="lg:col-span-2 p-5">
+        <p className="text-xs font-black text-slate-700 mb-1">
+          Calls Trend
+        </p>
+
+        <p className="text-[10px] text-slate-400 font-semibold mb-4">
+          Outbound vs Inbound
+        </p>
+
+        <ResponsiveContainer width="100%" height={180}>
+          <AreaChart
+            data={weeklyCallData}
+            margin={{ top: 5, right: 5, left: -20, bottom: 0 }}
+          >
+            <defs>
+              <linearGradient id="gradOut" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor={COLORS.indigo} stopOpacity={0.25} />
+                <stop offset="95%" stopColor={COLORS.indigo} stopOpacity={0} />
+              </linearGradient>
+
+              <linearGradient id="gradInb" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor={COLORS.sky} stopOpacity={0.2} />
+                <stop offset="95%" stopColor={COLORS.sky} stopOpacity={0} />
+              </linearGradient>
+            </defs>
+
+            <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+
+            <XAxis
+              dataKey="day"
+              tick={{ fontSize: 9, fontWeight: 700, fill: COLORS.slate400 }}
+              axisLine={false}
+              tickLine={false}
+            />
+
+            <YAxis
+              tick={{ fontSize: 9, fontWeight: 700, fill: COLORS.slate400 }}
+              axisLine={false}
+              tickLine={false}
+            />
+
+            <Tooltip content={<CustomTooltip />} />
+
+            <Area
+              type="monotone"
+              dataKey="out"
+              name="Outbound"
+              stroke={COLORS.indigo}
+              strokeWidth={2.5}
+              fill="url(#gradOut)"
+            />
+
+            <Area
+              type="monotone"
+              dataKey="inb"
+              name="Inbound"
+              stroke={COLORS.sky}
+              strokeWidth={2.5}
+              fill="url(#gradInb)"
+            />
+          </AreaChart>
+        </ResponsiveContainer>
+      </Card>
+
+      {/* Activity Summary */}
+      <Card className="p-5">
+
+        <p className="text-xs font-black text-slate-700 mb-1">
+          Activity Summary
+        </p>
+
+        <p className="text-[10px] text-slate-400 font-semibold mb-4">
+          Calls / Visits / Follow-ups
+        </p>
+
+        <div className="space-y-3">
+
+          {[
+            {
+              label: 'Outbound Calls',
+              val: 184,
+              max: 200,
+              icon: Phone,
+              color: COLORS.indigo,
+            },
+
+            {
+              label: 'Inbound Calls',
+              val: 100,
+              max: 150,
+              icon: Phone,
+              color: COLORS.sky,
+            },
+
+            {
+              label: 'Visits / Week',
+              val: 28,
+              max: 40,
+              icon: Briefcase,
+              color: COLORS.emerald,
+            },
+
+            {
+              label: 'Follow-ups Done',
+              val: 68,
+              max: 80,
+              icon: CheckCircle2,
+              color: COLORS.emerald,
+            },
+
+          ].map((m) => (
+            <div key={m.label}>
+
+              <div className="flex items-center justify-between mb-1">
+
+                <div className="flex items-center gap-1.5">
+                  <m.icon size={10} style={{ color: m.color }} />
+
+                  <span className="text-[9px] font-bold text-slate-500">
+                    {m.label}
+                  </span>
+                </div>
+
+                <span
+                  className="text-[10px] font-black"
+                  style={{ color: m.color }}
+                >
+                  {m.val}
+                </span>
+
+              </div>
+
+              <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+
+                <div
+                  className="h-full rounded-full"
+                  style={{
+                    width: `${(m.val / m.max) * 100}%`,
+                    background: m.color,
+                  }}
+                />
+
+              </div>
+
+            </div>
+          ))}
+
+        </div>
+
+      </Card>
+
+    </div>
+
+  </div>
+);
+// ─── Section 3: Deals & Revenue ────────────────────────────────────────────────
+
+const RevenuePerformance = () => (
+  <div className="space-y-5">
+
+    <SectionTitle
+      icon={DollarSign}
+      title="Revenue Performance"
+      subtitle="Revenue · Quota · Deals · Avg Deal Size"
+      accent={COLORS.emerald}
+    />
+
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+
+      {/* Revenue vs Quota */}
+      <Card className="p-5">
+
+        <p className="text-xs font-black text-slate-700 mb-1">
+          Revenue per rep
+        </p>
+
+        <p className="text-[10px] text-slate-400 font-semibold mb-4">
+          
+        </p>
+
+        {/* PASTE YOUR EXISTING Revenue vs Monthly Quota chart HERE */}
+      
+       
+        <ResponsiveContainer width="100%" height={190}>
+          <BarChart data={dealData} 
+          layout="vertical" 
+          margin={{ top: 0, right: 15, left: 10, bottom: 0 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" horizontal={false} />
+            <XAxis type="number" tick={{ fontSize: 9, fontWeight: 700, fill: COLORS.slate400 }} axisLine={false} tickLine={false} unit="M" />
+            <YAxis type="category" dataKey="name" tick={{ fontSize: 9, fontWeight: 700, fill: COLORS.slate400 }} axisLine={false} tickLine={false} width={28} />
+            <Tooltip content={<CustomTooltip prefix="$" suffix="M" />} />
+            <Bar dataKey="revenue" name="Revenue ($M)" radius={[0, 4, 4, 0]}>
+              {dealData.map((d, i) => <Cell key={i} fill={d.color}  />)}
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
+      
+      </Card>
+
+      {/* Deals vs Avg Deal */}
+      <Card className="p-5">
+
+
+        {/* PASTE YOUR EXISTING Deals Closed vs Avg Deal chart HERE */}
+        <p className="text-xs font-black text-slate-700 mb-1">Deals Closed vs Avg Deal Size</p>
+        <p className="text-[10px] text-slate-400 font-semibold mb-4">This month · per rep</p>
+        <ResponsiveContainer width="100%" height={190}>
+          <BarChart data={dealData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+            <XAxis dataKey="name" tick={{ fontSize: 9, fontWeight: 700, fill: COLORS.slate400 }} 
+                    axisLine={false} tickLine={false} />
+            <YAxis yAxisId="left" tick={{ fontSize: 9, fontWeight: 700, fill: COLORS.slate400 }} 
+                   axisLine={false} tickLine={false} />
+            <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 9, fontWeight: 700, fill: COLORS.slate400 }} 
+            axisLine={false} tickLine={false} unit="k" />
+            <Tooltip content={<CustomTooltip />} />
+            <Bar yAxisId="left" dataKey="deals" name="Deals Closed" radius={[4, 4, 0, 0]} barSize={30}>
+              {dealData.map((d, i) => <Cell key={i} fill={d.color} />)}
+            </Bar>
+            <Line yAxisId="right" type="monotone" dataKey="avgDeal" name="Avg Deal ($k)" stroke={COLORS.amber} strokeWidth={2.5} dot={{ r: 4, fill: COLORS.amber, strokeWidth: 0 }} />
+          </BarChart>
+        </ResponsiveContainer>
+        <div className="flex gap-4 mt-3">
+          <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-sm bg-indigo-500" /><span className="text-[9px] font-bold text-slate-400">Deals Closed</span></div>
+          <div className="flex items-center gap-1.5"><div className="w-3 h-0.5 bg-amber-500" /><span className="text-[9px] font-bold text-slate-400">Avg Deal Size</span></div>
+        </div>
+    
+      </Card>
+
+    </div>
+
+  </div>
+);
+
+// ─── Section 4: PipelineActivity ──────────────────────────────────────────
+
+const PipelineActivity = () => (
+  <div className="space-y-5">
+    <SectionTitle icon={BarChart2} title="Pipeline Activity" 
+    subtitle="Leads · Quotes · Follow-ups per rep" accent={COLORS.sky} />
+
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+      {/* Stacked bar */}
+      <Card className="p-5">
+        
+        <ResponsiveContainer width="100%" height={200}>
+          <BarChart data={pipelineData} margin={{ top: 0, right: 0, left: -25, bottom: 0 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+            <XAxis dataKey="name" tick={{ fontSize: 9, fontWeight: 700, fill: COLORS.slate400 }} axisLine={false} tickLine={false} />
+            <YAxis tick={{ fontSize: 9, fontWeight: 700, fill: COLORS.slate400 }} axisLine={false} tickLine={false} />
+            <Tooltip content={<CustomTooltip />} />
+            <Bar dataKey="leads" name="New Leads" fill={COLORS.indigo} radius={[0, 0, 0, 0]} stackId="a" barSize={30}/>
+            <Bar dataKey="quotes" name="Quotes Sent" fill={COLORS.amber} radius={[0, 0, 0, 0]} stackId="a" barSize={30} />
+            <Bar dataKey="followups" name="Follow-ups Done" fill={COLORS.emerald} radius={[4, 4, 0, 0]} stackId="a" barSize={30} />
+          </BarChart>
+        </ResponsiveContainer>
+        <div className="flex flex-wrap gap-3 mt-3">
+          {[
+            { label: 'New Leads', color: COLORS.indigo },
+            { label: 'Quotes Sent', color: COLORS.amber },
+            { label: 'Follow-ups Done', color: COLORS.emerald },
+          ].map(l => (
+            <div key={l.label} className="flex items-center gap-1.5">
+              <div className="w-2.5 h-2.5 rounded-sm" style={{ background: l.color }} />
+              <span className="text-[9px] font-bold text-slate-400">{l.label}</span>
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      {/* Pipeline table */}
+      <Card className="p-5">
+        <p className="text-xs font-black text-slate-700 mb-1">Rep-Level Pipeline Detail</p>
+        <p className="text-[10px] text-slate-400 font-semibold mb-4">Outbound · Inbound · Visits · Leads · Quotes · Follow-ups</p>
+        <table className="w-full">
+          <thead>
+            <tr className="border-b border-slate-100">
+              {['Rep', 'Out', 'In', 'Visits', 'Leads', 'Quotes', 'Done', 'Overdue'].map(h => (
+                <th key={h} className="pb-2 text-left text-[8px] font-black text-slate-400 uppercase tracking-widest">{h}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-50">
+            {REPS.map((r, i) => (
+              <tr key={i} className="hover:bg-slate-50 transition-all">
+                <td className="py-3">
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-6 rounded-lg flex items-center justify-center text-[8px] font-black text-white" style={{ background: REP_COLORS[i] }}>{r.short}</div>
+                    <span className="text-[10px] font-bold text-slate-700">{r.name}</span>
+                  </div>
+                </td>
+                <td className="py-3 text-[10px] font-bold text-slate-600">{r.out}</td>
+                <td className="py-3 text-[10px] font-bold text-slate-600">{r.inb}</td>
+                <td className="py-3 text-[10px] font-bold text-slate-600">{r.visits}</td>
+                <td className="py-3"><Pill color="indigo">{r.leads}</Pill></td>
+                <td className="py-3"><Pill color="amber">{r.quotes}</Pill></td>
+                <td className="py-3"><Pill color="emerald">{r.done}</Pill></td>
+                <td className="py-3">
+                  <Pill color={r.overdue > 0 ? 'rose' : 'emerald'}>{r.overdue}</Pill>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </Card>
+    </div>
+  </div>
+);
+
+
+
+// ─── Section 5: Targets ────────────────────────────────────────────────────────
+ const Targets = () => (
+  <div className="space-y-5">
+
+    <SectionTitle
+      icon={Target}
+      title="Targets & Quota"
+      subtitle="Revenue vs quota · Achievement % · Avg deal cycle time"
+      accent={COLORS.violet}
+    />
+
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+      {/* Revenue vs Quota grouped bar */}
+      <Card className="lg:col-span-2 p-5">
+        <p className="text-xs font-black text-slate-700 mb-1">Revenue vs Monthly Quota</p>
+        <p className="text-[10px] text-slate-400 font-semibold mb-4">Actual revenue (filled) vs target ($k)</p>
+        <ResponsiveContainer width="100%" height={200}>
+          <BarChart data={revenueVsQuota} margin={{ top: 0, right: 0, left: -15, bottom: 0 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+            <XAxis dataKey="name" tick={{ fontSize: 9, fontWeight: 700, fill: COLORS.slate400 }} axisLine={false} tickLine={false} />
+            <YAxis tick={{ fontSize: 9, fontWeight: 700, fill: COLORS.slate400 }} axisLine={false} tickLine={false} unit="k" />
+            <Tooltip content={<CustomTooltip suffix="k" />} />
+            <Bar dataKey="quota" name="Quota ($k)" fill="#e2e8f0" radius={[4, 4, 0, 0]} barSize={40}/>
+            <Bar dataKey="revenue" name="Revenue ($k)" radius={[4, 4, 0, 0]} barSize={40 }>
+           
+              {revenueVsQuota.map((d, i) => (
+                <Cell key={i} fill={d.color} fillOpacity={d.pct >= 90 ? 1 : d.pct >= 70 ? 0.85 : 0.65} />
+              ))}
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
+        <div className="flex gap-4 mt-3">
+          <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-sm bg-slate-200" />
+          <span className="text-[9px] font-bold text-slate-400">Quota</span></div>
+          <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-sm bg-indigo-500" /><span className="text-[9px] font-bold text-slate-400">Actual Revenue</span></div>
+        </div>
+      </Card>
+
+      {/* Quota achievement radials */}
+      <Card className="p-5">
+        <p className="text-xs font-black text-slate-700 mb-1">Quota Achievement</p>
+        <p className="text-[10px] text-slate-400 font-semibold mb-4">% of monthly target hit</p>
+        <div className="grid grid-cols-2 gap-3">
+          {REPS.map((r, i) => {
+            const pct = Math.round((r.revenue / r.quota) * 100);
+            return (
+              <div key={i} className="flex flex-col items-center">
+                <div className="relative w-16 h-16">
+                  <svg viewBox="0 0 36 36" className="w-16 h-16 -rotate-90">
+                    <circle cx="18" cy="18" r="14" fill="none" stroke="#f1f5f9" strokeWidth="3" />
+                    <circle
+                      cx="18" cy="18" r="14" fill="none"
+                      stroke={REP_COLORS[i]}
+                      strokeWidth="3"
+                      strokeDasharray={`${(pct / 100) * 87.96} 87.96`}
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <span className="text-[11px] font-black text-slate-800">{pct}%</span>
+                  </div>
+                </div>
+                <span className="text-[8px] font-bold text-slate-500 mt-1">{r.short}</span>
+              </div>
+            );
+          })}
+        </div>
+      </Card>
+    </div>
+      
+  </div>
+);
+    
+
+const DealCycleSection = () => (
+  <div className="space-y-5">
+
+    <SectionTitle
+      icon={Clock}
+      title="Avg Deal Cycle Time"
+      subtitle="Days from first contact to close"
+      accent={COLORS.violet}
+    />
+
+    {/* PASTE YOUR EXISTING Avg Deal Cycle Time CARD HERE */}
+ <Card className="p-5">
+      <p className="text-xs font-black text-slate-700 mb-1">
+        Average Deal Cycle Time
+      </p>
+
+      <p className="text-[10px] text-slate-400 font-semibold mb-5">
+        Days from first contact to close
+      </p>
+
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {REPS.map((r, i) => (
+          <div key={i}>
+            <div className="flex items-center gap-2 mb-3">
+              <div
+                className="w-6 h-6 rounded-lg flex items-center justify-center text-[9px] font-black text-white"
+                style={{ background: REP_COLORS[i] }}
+              >
+                {r.short}
+              </div>
+
+              <span className="text-[10px] font-bold text-slate-600">
+                {r.name}
+              </span>
+            </div>
+
+            <div className="flex items-end gap-2">
+              <span className="text-2xl font-black text-slate-800">
+                {r.cycleTime}
+              </span>
+
+              <span className="text-[10px] text-slate-400 font-bold pb-1">
+                days
+              </span>
+            </div>
+
+            <div className="mt-2 h-2 bg-slate-100 rounded-full overflow-hidden">
+              <div
+                className="h-full rounded-full"
+                style={{
+                  width: `${(r.cycleTime / 45) * 100}%`,
+                  background: REP_COLORS[i],
+                }}
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+    </Card>
+  </div>
+);
+
+
+
+// ─── Section 7: Quality Metrics ────────────────────────────────────────────────
+const QualityMetrics = () => (
+  <div className="space-y-5">
+    <SectionTitle icon={Star} title="Quality Metrics" subtitle="Conversion · CSAT · Repeat customers · Upsell rate" accent={COLORS.amber} />
+
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      {[
+        { label: 'Best Conversion Rate', value: '24%', icon: TrendingUp, accent: COLORS.indigo, sub: 'S. Abraham' },
+        { label: 'Avg CSAT Score', value: '4.4', icon: Star, accent: COLORS.amber, sub: 'out of 5.0' },
+        { label: 'Total Repeat Customers', value: '33', icon: RefreshCw, accent: COLORS.emerald, sub: 'this month' },
+        { label: 'Best Upsell Rate', value: '18%', icon: TrendingUp, accent: COLORS.violet, sub: 'S. Abraham' },
+      ].map((m, i) => (
+        <MetricCard key={i} label={m.label} value={m.value} trend="+4%" icon={m.icon} sub={m.sub} accent={m.accent} />
+      ))}
+    </div>
+
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+      {/* Conversion + Upsell grouped bar */}
+      <Card className="p-5">
+        <p className="text-xs font-black text-slate-700 mb-1">Conversion & Upsell Rate</p>
+        <p className="text-[10px] text-slate-400 font-semibold mb-4">Lead-to-close % · Upsell % per rep</p>
+        <ResponsiveContainer width="100%" height={190}>
+          <BarChart data={qualityData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+            <XAxis dataKey="name" tick={{ fontSize: 9, fontWeight: 700, fill: COLORS.slate400 }} axisLine={false} tickLine={false} />
+            <YAxis tick={{ fontSize: 9, fontWeight: 700, fill: COLORS.slate400 }} axisLine={false} tickLine={false} unit="%" />
+            <Tooltip content={<CustomTooltip suffix="%" />} />
+            <Bar dataKey="conv" name="Conversion %" radius={[4, 4, 0, 0]}>
+              {qualityData.map((d, i) => <Cell key={i} fill={d.color} />)}
+            </Bar>
+            <Bar dataKey="upsell" name="Upsell %" fill="#f59e0b" radius={[4, 4, 0, 0]} fillOpacity={0.5} />
+          </BarChart>
+        </ResponsiveContainer>
+        <div className="flex gap-4 mt-3">
+          <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-sm bg-indigo-500" /><span className="text-[9px] font-bold text-slate-400">Conversion %</span></div>
+          <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-sm bg-amber-400" /><span className="text-[9px] font-bold text-slate-400">Upsell %</span></div>
+        </div>
+      </Card>
+
+      {/* CSAT + Repeat customers */}
+      <Card className="p-5">
+        <p className="text-xs font-black text-slate-700 mb-1">CSAT & Repeat Customers</p>
+        <p className="text-[10px] text-slate-400 font-semibold mb-4">Satisfaction score (×20) · Repeat handled</p>
+        <ResponsiveContainer width="100%" height={190}>
+          <BarChart data={qualityData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+            <XAxis dataKey="name" tick={{ fontSize: 9, fontWeight: 700, fill: COLORS.slate400 }} axisLine={false} tickLine={false} />
+            <YAxis tick={{ fontSize: 9, fontWeight: 700, fill: COLORS.slate400 }} axisLine={false} tickLine={false} />
+            <Tooltip content={<CustomTooltip />} />
+            <Bar dataKey="csat" name="CSAT (×20)" fill={COLORS.amber} radius={[4, 4, 0, 0]} fillOpacity={0.85} />
+            <Bar dataKey="repeat" name="Repeat Customers" fill={COLORS.emerald} radius={[4, 4, 0, 0]} />
+          </BarChart>
+        </ResponsiveContainer>
+        <div className="flex gap-4 mt-3">
+          <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-sm bg-amber-400" /><span className="text-[9px] font-bold text-slate-400">CSAT (×20 scale)</span></div>
+          <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-sm bg-emerald-500" /><span className="text-[9px] font-bold text-slate-400">Repeat Customers</span></div>
+        </div>
+      </Card>
+    </div>
+
+    {/* Rep quality table */}
+    <Card className="p-5">
+      <p className="text-xs font-black text-slate-700 mb-1">Quality Metrics per Rep</p>
+      <p className="text-[10px] text-slate-400 font-semibold mb-4">Full breakdown</p>
+      <table className="w-full">
+        <thead>
+          <tr className="border-b border-slate-100">
+            {['Rep', 'Conversion Rate', 'CSAT Score', 'Repeat Customers', 'Upsell Rate'].map(h => (
+              <th key={h} className="pb-3 text-left text-[8px] font-black text-slate-400 uppercase tracking-widest px-2">{h}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-slate-50">
+          {REPS.map((r, i) => (
+            <tr key={i} className="hover:bg-slate-50 transition-all">
+              <td className="px-2 py-3">
+                <div className="flex items-center gap-2">
+                  <RepAvatar short={r.short} color={REP_COLORS[i]} rank={i} />
+                  <span className="text-xs font-bold text-slate-800">{r.name}</span>
+                </div>
+              </td>
+              <td className="px-2 py-3">
+                <div className="flex items-center gap-2">
+                  <div className="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden" style={{ maxWidth: 80 }}>
+                    <div className="h-full rounded-full" style={{ width: `${(r.conv / 30) * 100}%`, background: REP_COLORS[i] }} />
+                  </div>
+                  <span className="text-[10px] font-black text-slate-700">{r.conv}%</span>
+                </div>
+              </td>
+              <td className="px-2 py-3">
+                <div className="flex items-center gap-1.5">
+                  {[1, 2, 3, 4, 5].map(s => (
+                    <div key={s} className={`w-2 h-2 rounded-full ${s <= Math.round(r.csat) ? '' : 'opacity-20'}`} style={{ background: COLORS.amber }} />
+                  ))}
+                  <span className="text-[10px] font-black text-amber-600 ml-1">{r.csat}</span>
+                </div>
+              </td>
+              <td className="px-2 py-3">
+                <div className="flex items-center gap-2">
+                  <Users size={11} className="text-emerald-500" />
+                  <span className="text-[10px] font-black text-emerald-600">{r.repeat}</span>
+                </div>
+              </td>
+              <td className="px-2 py-3"><Pill color="violet">{r.upsell}%</Pill></td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </Card>
+  </div>
+);
+
+
 // ─── Root Component ────────────────────────────────────────────────────────────
 const TeamPerformance = () => (
-  <div className="space-y-10 animate-in fade-in duration-500 px-1">
-    <DailyActivity />
-    <div className="h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
-    <PipelineActivity />
-    <div className="h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
-    <DealsRevenue />
-    <div className="h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
-    <Targets />
-    <div className="h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
-    <QualityMetrics />
-    <div className="h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
+
+
+  <div className="space-y-6 animate-in fade-in duration-500 px-1 ">
+
+    {/* 1. SUMMARY */}
+    <SummaryCards />
+
+   <div className="h-px my-1 bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
+
+    {/* 2. LEADERBOARD */}
     <OverallLeaderboard />
+
+    <div className="h-px my-1 bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
+
+    {/* 3. DAILY ACTIVITY */}
+    <DailyActivity />
+
+    <div className="h-px my-1 bg-gradient-to-r from-transparent via-slate-200 to-transparent"/>
+
+    {/* 4. PIPELINE */}
+    <PipelineActivity />
+
+    <div className="h-px my-1 bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
+
+    {/* 5. TARGETS */}
+    <Targets />
+
+    <div className="h-px my-1 bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
+
+    {/* 6. REVENUE PERORMANCE */}
+    <RevenuePerformance />
+
+    <div className="h-px my-1 bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
+
+    {/* 7. DEAL CYCLE */}
+    <DealCycleSection />
+
+    <div className="h-px my-1 bg-gradient-to-r from-transparent via-slate-200 to-transparent" />
+
+    {/* 8. QUALITY */}
+    <QualityMetrics />
+
   </div>
 );
 
